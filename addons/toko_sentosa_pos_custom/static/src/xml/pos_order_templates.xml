@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="toko_sentosa.PosOrderPatches" t-inherit="point_of_sale.OrderTabs" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('floating-order-container')]" position="inside">
+            <div class="sentosa-order-info d-flex align-items-center gap-1 small text-muted ms-2" t-if="order.x_cashier_notes || order.raw?.x_cashier_notes || order.x_barcode_verified || order.raw?.x_barcode_verified">
+                <t t-if="order.x_barcode_verified || order.raw?.x_barcode_verified">
+                    <span class="badge bg-success">Scan</span>
+                </t>
+                <t t-if="order.x_cashier_notes || order.raw?.x_cashier_notes">
+                    <span t-esc="order.x_cashier_notes || order.raw?.x_cashier_notes"/>
+                </t>
+            </div>
+        </xpath>
+    </t>
+</templates>
