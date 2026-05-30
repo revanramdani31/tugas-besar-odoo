@@ -4,9 +4,12 @@
     'category': 'Sales/Point of Sale',
     'summary': 'Modifikasi ringan POS untuk tracking barcode & catatan kasir',
     'depends': ['point_of_sale', 'stock'],
-    'data': ['views/pos_order_views.xml'],
+    'data': [
+        'views/pos_order_views.xml',
+    ],
     'assets': {
-        'point_of_sale.assets': [
+        'point_of_sale._assets_pos': [
+            'toko_sentosa_pos_custom/static/src/css/pos_custom.css',
             'toko_sentosa_pos_custom/static/src/xml/pos_order_templates.xml',
             'toko_sentosa_pos_custom/static/src/js/pos_order_patch.js',
         ],

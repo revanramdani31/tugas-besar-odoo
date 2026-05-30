@@ -13,4 +13,43 @@
             </div>
         </xpath>
     </t>
+
+    <t t-name="toko_sentosa.OrderReceiptInherit" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        
+        <xpath expr="//ReceiptHeader" position="after">
+            <div style="font-size: 11px; margin-top: 3px; color: #555; font-style: italic; text-align: center;">
+                <span>IG: @tokoutama_sentosa | TikTok: @tokoutama_sentosa</span>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('before-footer')]" position="before">
+            <t t-if="order.x_cashier_notes">
+                <div class="pos-receipt-text-center" style="margin-top: 10px; margin-bottom: 10px; padding: 5px; border-top: 1px dashed #000; border-bottom: 1px dashed #000; font-size: 11px; text-align: left;">
+                    <strong>Catatan Kasir:</strong> <t t-esc="order.x_cashier_notes"/>
+                </div>
+            </t>
+            <div class="pos-receipt-text-center" style="font-size: 10px; margin-top: 15px; margin-bottom: 15px; padding: 8px; border: 1px solid #000; line-height: 1.4; text-align: left;">
+                <div style="text-align: center; font-weight: bold; margin-bottom: 4px;">S&amp;K PENGEMBALIAN BARANG</div>
+                1. Wajib menyertakan struk fisik asli ini.<br/>
+                2. Maksimal penukaran 2 hari setelah tanggal pembelian.<br/>
+                3. Barang wajib dalam kondisi utuh (tag/label belum dilepas).<br/>
+                4. Produk pakaian dalam atau barang diskon tidak dapat ditukar.
+            </div>
+        </xpath>
+
+    </t>
+
+    <!-- Kustomisasi LoginScreen (Layar Depan POS) -->
+    <!--
+    <t t-name="toko_sentosa.LoginScreenInherit" t-inherit="point_of_sale.LoginScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('login-body')]" position="before">
+            <div class="sentosa-welcome-title">
+                Selamat Datang di Toko Sentosa
+            </div>
+        </xpath>
+        <xpath expr="//button[hasclass('open-register-btn')]//span" position="replace">
+            <span class="d-flex flex-grow-1 align-items-center">Buka Mesin Kasir</span>
+        </xpath>
+    </t>
+    -->
 </templates>
