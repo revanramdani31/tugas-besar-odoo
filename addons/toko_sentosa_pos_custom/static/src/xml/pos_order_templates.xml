@@ -7,6 +7,7 @@
                     <span class="badge bg-success">Scan</span>
                 </t>
                 <t t-if="order.x_cashier_notes || order.raw?.x_cashier_notes">
+                    <i class="fa fa-sticky-note me-1"/>
                     <span t-esc="order.x_cashier_notes || order.raw?.x_cashier_notes"/>
                 </t>
             </div>
