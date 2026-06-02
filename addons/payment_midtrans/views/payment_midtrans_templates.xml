@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Redirect form presented to user before being sent to our controller -->
+    <template id="midtrans_redirect_form">
+        <form t-att-action="api_url" method="post">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <input type="hidden" name="snap_token" t-att-value="snap_token"/>
+            <input type="hidden" name="client_key" t-att-value="client_key"/>
+            <input type="hidden" name="snap_script_url" t-att-value="snap_script_url"/>
+            <input type="hidden" name="reference" t-att-value="reference"/>
+        </form>
+    </template>
+
+    <!-- The intermediate page that embeds the Snap Popup -->
+    <template id="midtrans_snap_checkout_page" name="Midtrans Checkout">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5 text-center">
+                <h3>Processing Payment...</h3>
+                <p>Please complete your payment in the popup window.</p>
+                <div class="spinner-border text-primary mt-3" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Midtrans Snap JS -->
+            <script type="text/javascript" t-att-src="snap_script_url" t-att-data-client-key="client_key"></script>
+            
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function() {
+                    if (window.snap) {
+                        window.snap.pay("<t t-esc='snap_token'/>", {
+                            onSuccess: function(result){
+                                window.location.href = "<t t-esc='return_url'/>";
+                            },
+                            onPending: function(result){
+                                window.location.href = "<t t-esc='return_url'/>";
+                            },
+                            onError: function(result){
+                                window.location.href = "<t t-esc='return_url'/>";
+                            },
+                            onClose: function(){
+                                window.location.href = "<t t-esc='return_url'/>";
+                            }
+                        });
+                    } else {
+                        console.error("Midtrans Snap script not loaded.");
+                    }
+                });
+            </script>
+        </t>
+    </template>
+</odoo>
