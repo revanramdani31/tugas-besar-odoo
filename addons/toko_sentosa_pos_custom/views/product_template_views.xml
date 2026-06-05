@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tambah tab / group "Keamanan Produk" pada form produk di backend -->
+    <record id="product_template_form_inherit_hazardous" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.hazardous</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="⚠️ Keamanan Produk" name="hazardous_info">
+                    <group string="Informasi Bahaya">
+                        <field name="x_is_hazardous"
+                               widget="boolean_toggle"
+                               string="Tandai sebagai Produk Berbahaya"/>
+                        <field name="x_hazard_type"
+                               invisible="not x_is_hazardous"
+                               required="x_is_hazardous"
+                               string="Jenis Bahaya"/>
+                        <field name="x_hazard_notes"
+                               invisible="not x_is_hazardous"
+                               string="Catatan / SOP Penanganan"
+                               placeholder="Contoh: Jauhkan dari jangkauan anak-anak, simpan di tempat berventilasi"/>
+                    </group>
+                    <div invisible="not x_is_hazardous"
+                         class="alert alert-warning" role="alert">
+                        <strong>Perhatian:</strong> Produk ini akan menampilkan pop-up peringatan
+                        di layar kasir POS setiap kali ditambahkan ke keranjang belanja.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Tampilkan badge peringatan di list produk backend -->
+    <record id="product_template_list_inherit_hazardous" model="ir.ui.view">
+        <field name="name">product.template.list.inherit.hazardous</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="x_is_hazardous" string="⚠️ Berbahaya" optional="show"/>
+                <field name="x_hazard_type" string="Jenis Bahaya" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

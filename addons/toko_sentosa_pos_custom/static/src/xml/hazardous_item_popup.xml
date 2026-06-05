@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="toko_sentosa_pos_custom.HazardousItemPopup">
+        <!--
+            Overlay gelap + modal peringatan hazardous item.
+            Desain menggunakan inline style agar tidak bergantung pada
+            stylesheet eksternal POS yang bisa berbeda antar versi Odoo.
+            OWL 2 (Odoo 17+): akses getter langsung tanpa prefix "component."
+        -->
+        <div class="modal-overlay hazardous-overlay"
+             style="
+                position: fixed; inset: 0;
+                background: rgba(0,0,0,0.65);
+                z-index: 9999;
+                display: flex; align-items: center; justify-content: center;
+                animation: fadeInOverlay 0.2s ease;
+             ">
+
+            <div class="hazardous-modal"
+                 t-attf-style="
+                    background: {{ hazardConfig.bg }};
+                    border-radius: 16px;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+                    width: 420px; max-width: 95vw;
+                    padding: 0;
+                    overflow: hidden;
+                    animation: slideUp 0.25s ease;
+                 ">
+
+                <!-- ── Header ── -->
+                <div class="hazardous-header"
+                     t-attf-style="
+                        background: {{ hazardConfig.color }};
+                        padding: 20px 24px 16px;
+                        text-align: center;
+                        color: white;
+                     ">
+                    <div style="font-size: 48px; margin-bottom: 8px;">
+                        <i t-attf-class="fa {{ hazardConfig.icon }}"/>
+                    </div>
+                    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; opacity: 0.9; text-transform: uppercase;">
+                        ⚠️ PERINGATAN PRODUK BERBAHAYA
+                    </div>
+                </div>
+
+                <!-- ── Body ── -->
+                <div style="padding: 24px 24px 20px;">
+
+                    <!-- Nama produk -->
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            Produk
+                        </div>
+                        <div style="font-size: 18px; font-weight: 700; color: #2c3e50;">
+                            <t t-esc="props.product.display_name"/>
+                        </div>
+                    </div>
+
+                    <!-- Badge jenis bahaya -->
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <span t-attf-style="
+                            display: inline-block;
+                            background: {{ hazardConfig.color }};
+                            color: white;
+                            border-radius: 20px;
+                            padding: 5px 16px;
+                            font-size: 12px;
+                            font-weight: 600;
+                        ">
+                            <i t-attf-class="fa {{ hazardConfig.icon }} me-1"/>
+                            <t t-esc="hazardLabel"/>
+                        </span>
+                    </div>
+
+                    <!-- Garis pemisah -->
+                    <hr t-attf-style="border-color: {{ hazardConfig.color }}; opacity: 0.3; margin: 0 0 14px;"/>
+
+                    <!-- Instruksi standar berdasarkan jenis bahaya -->
+                    <div style="font-size: 13px; color: #555; margin-bottom: 12px; line-height: 1.6;">
+                        <t t-if="props.product.x_hazard_type === 'chemical'">
+                            <strong style="color: #e67e22;">🧪 Penanganan Zat Kimia:</strong><br/>
+                            • Hindari kontak langsung dengan kulit / mata<br/>
+                            • Pastikan pembeli memahami cara penyimpanan<br/>
+                            • Kemas terpisah dari bahan makanan
+                        </t>
+                        <t t-elif="props.product.x_hazard_type === 'sharp'">
+                            <strong style="color: #e74c3c;">🔪 Penanganan Benda Tajam:</strong><br/>
+                            • Verifikasi usia pembeli jika diperlukan<br/>
+                            • Pastikan dikemas dengan pelindung aman<br/>
+                            • Ingatkan pembeli untuk menyimpan di tempat aman
+                        </t>
+                        <t t-elif="props.product.x_hazard_type === 'flammable'">
+                            <strong style="color: #c0392b;">🔥 Penanganan Bahan Mudah Terbakar:</strong><br/>
+                            • Jauhkan dari sumber api / panas<br/>
+                            • Simpan di tempat berventilasi baik<br/>
+                            • Kemas dalam kantong terpisah
+                        </t>
+                        <t t-else="">
+                            <strong style="color: #f39c12;">⚠️ Perhatian Khusus:</strong><br/>
+                            • Produk ini memerlukan penanganan ekstra hati-hati<br/>
+                            • Ikuti prosedur standar penanganan barang berbahaya
+                        </t>
+                    </div>
+
+                    <!-- Catatan kustom dari admin (jika ada) -->
+                    <t t-if="hazardNotes">
+                        <div t-attf-style="
+                            background: white;
+                            border-left: 4px solid {{ hazardConfig.color }};
+                            border-radius: 0 8px 8px 0;
+                            padding: 10px 14px;
+                            font-size: 12px;
+                            color: #444;
+                            margin-bottom: 12px;
+                            line-height: 1.5;
+                        ">
+                            <strong>📋 Catatan Admin:</strong><br/>
+                            <t t-esc="hazardNotes"/>
+                        </div>
+                    </t>
+
+                    <!-- Konfirmasi kasir -->
+                    <div style="
+                        background: #fff3cd;
+                        border: 1px solid #ffc107;
+                        border-radius: 8px;
+                        padding: 10px 14px;
+                        font-size: 12px;
+                        color: #856404;
+                        margin-bottom: 0;
+                    ">
+                        <strong>Konfirmasi Kasir:</strong> Apakah Anda sudah menginformasikan
+                        risiko produk ini kepada pembeli?
+                    </div>
+                </div>
+
+                <!-- ── Footer Tombol ── -->
+                <div style="
+                    display: flex;
+                    gap: 10px;
+                    padding: 0 24px 24px;
+                ">
+                    <!-- Tombol Batal -->
+                    <button
+                        t-on-click="cancel"
+                        style="
+                            flex: 1;
+                            padding: 12px;
+                            border: 2px solid #bdc3c7;
+                            border-radius: 10px;
+                            background: white;
+                            color: #7f8c8d;
+                            font-size: 14px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        ">
+                        ✕ Batal
+                    </button>
+
+                    <!-- Tombol Lanjutkan -->
+                    <button
+                        t-on-click="confirm"
+                        t-attf-style="
+                            flex: 2;
+                            padding: 12px;
+                            border: none;
+                            border-radius: 10px;
+                            background: {{ hazardConfig.color }};
+                            color: white;
+                            font-size: 14px;
+                            font-weight: 700;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        ">
+                        ✓ Sudah, Lanjutkan
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>
