@@ -5,6 +5,7 @@
         <!--
             Overlay gelap + modal peringatan hazardous item.
             Enhanced: backdrop blur, checkbox konfirmasi, fade-in animation.
+            OWL 2 (Odoo 17+/19): akses getter langsung tanpa prefix "component."
         -->
         <div class="modal-overlay hazardous-overlay"
              style="
@@ -19,26 +20,26 @@
 
             <div class="hazardous-modal"
                  t-attf-style="
-                    background: {{ component.hazardConfig.bg }};
+                    background: {{ hazardConfig.bg }};
                     border-radius: 16px;
                     box-shadow: 0 20px 60px rgba(0,0,0,0.35);
                     width: 440px; max-width: 95vw;
                     padding: 0;
                     overflow: hidden;
                     animation: slideUp 0.3s ease;
-                    border-left: 5px solid {{ component.hazardConfig.color }};
+                    border-left: 5px solid {{ hazardConfig.color }};
                  ">
 
                 <!-- ── Header ── -->
                 <div class="hazardous-header"
                      t-attf-style="
-                        background: {{ component.hazardConfig.color }};
+                        background: {{ hazardConfig.color }};
                         padding: 20px 24px 16px;
                         text-align: center;
                         color: white;
                      ">
                     <div style="font-size: 48px; margin-bottom: 8px;">
-                        <i t-attf-class="fa {{ component.hazardConfig.icon }}"/>
+                        <i t-attf-class="fa {{ hazardConfig.icon }}"/>
                     </div>
                     <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; opacity: 0.9; text-transform: uppercase;">
                         ⚠️ PRODUK MEMERLUKAN PENANGANAN KHUSUS
@@ -62,20 +63,20 @@
                     <div style="text-align: center; margin-bottom: 16px;">
                         <span t-attf-style="
                             display: inline-block;
-                            background: {{ component.hazardConfig.color }};
+                            background: {{ hazardConfig.color }};
                             color: white;
                             border-radius: 20px;
                             padding: 5px 16px;
                             font-size: 12px;
                             font-weight: 600;
                         ">
-                            <i t-attf-class="fa {{ component.hazardConfig.icon }} me-1"/>
-                            <t t-esc="component.hazardLabel"/>
+                            <i t-attf-class="fa {{ hazardConfig.icon }} me-1"/>
+                            <t t-esc="hazardLabel"/>
                         </span>
                     </div>
 
                     <!-- Garis pemisah -->
-                    <hr t-attf-style="border-color: {{ component.hazardConfig.color }}; opacity: 0.3; margin: 0 0 14px;"/>
+                    <hr t-attf-style="border-color: {{ hazardConfig.color }}; opacity: 0.3; margin: 0 0 14px;"/>
 
                     <!-- Instruksi standar berdasarkan jenis bahaya -->
                     <div style="font-size: 13px; color: #555; margin-bottom: 12px; line-height: 1.6;">
@@ -105,10 +106,10 @@
                     </div>
 
                     <!-- Catatan kustom dari admin (jika ada) -->
-                    <t t-if="component.hazardNotes">
+                    <t t-if="hazardNotes">
                         <div t-attf-style="
                             background: white;
-                            border-left: 4px solid {{ component.hazardConfig.color }};
+                            border-left: 4px solid {{ hazardConfig.color }};
                             border-radius: 0 8px 8px 0;
                             padding: 10px 14px;
                             font-size: 12px;
@@ -117,19 +118,19 @@
                             line-height: 1.5;
                         ">
                             <strong>📋 Catatan Admin:</strong><br/>
-                            <t t-esc="component.hazardNotes"/>
+                            <t t-esc="hazardNotes"/>
                         </div>
                     </t>
 
                     <!-- ── Checkbox Konfirmasi Kasir (WAJIB) ── -->
                     <div class="hazardous-confirm-section"
                          t-attf-style="
-                            background: {{ component.state.confirmed ? '#d4edda' : '#fff3cd' }};
-                            border: 1px solid {{ component.state.confirmed ? '#28a745' : '#ffc107' }};
+                            background: {{ state.confirmed ? '#d4edda' : '#fff3cd' }};
+                            border: 1px solid {{ state.confirmed ? '#28a745' : '#ffc107' }};
                             border-radius: 10px;
                             padding: 12px 14px;
                             font-size: 13px;
-                            color: {{ component.state.confirmed ? '#155724' : '#856404' }};
+                            color: {{ state.confirmed ? '#155724' : '#856404' }};
                             margin-bottom: 0;
                             cursor: pointer;
                             transition: all 0.3s ease;
@@ -138,7 +139,7 @@
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0;">
                             <input type="checkbox"
                                    class="hazardous-checkbox"
-                                   t-att-checked="component.state.confirmed"
+                                   t-att-checked="state.confirmed"
                                    t-on-click.stop="toggleConfirm"/>
                             <span style="font-weight: 600; line-height: 1.4;">
                                 Saya telah memeriksa &amp; menangani produk ini sesuai prosedur keamanan
@@ -167,31 +168,29 @@
                             font-weight: 600;
                             cursor: pointer;
                             transition: all 0.2s;
-                        "
-                        onmouseenter="this.style.background='#ecf0f1'"
-                        onmouseleave="this.style.background='white'">
+                        ">
                         ✕ Batal
                     </button>
 
                     <!-- Tombol Lanjutkan (disabled jika belum confirm) -->
                     <button
                         t-on-click="confirm"
-                        t-att-disabled="!component.canProceed"
+                        t-att-disabled="!canProceed"
                         t-attf-style="
                             flex: 2;
                             padding: 12px;
                             border: none;
                             border-radius: 10px;
-                            background: {{ component.canProceed ? component.hazardConfig.color : '#bdc3c7' }};
+                            background: {{ canProceed ? hazardConfig.color : '#bdc3c7' }};
                             color: white;
                             font-size: 14px;
                             font-weight: 700;
-                            cursor: {{ component.canProceed ? 'pointer' : 'not-allowed' }};
+                            cursor: {{ canProceed ? 'pointer' : 'not-allowed' }};
                             transition: all 0.3s;
-                            box-shadow: {{ component.canProceed ? '0 4px 12px rgba(0,0,0,0.15)' : 'none' }};
-                            opacity: {{ component.canProceed ? '1' : '0.6' }};
+                            box-shadow: {{ canProceed ? '0 4px 12px rgba(0,0,0,0.15)' : 'none' }};
+                            opacity: {{ canProceed ? '1' : '0.6' }};
                         ">
-                        <t t-if="component.canProceed">✓ Sudah, Lanjutkan</t>
+                        <t t-if="canProceed">✓ Sudah, Lanjutkan</t>
                         <t t-else="">🔒 Centang konfirmasi dulu</t>
                     </button>
                 </div>
