@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- ─── Navbar: Info Toko + Kasir ─── -->
+    <t t-name="toko_sentosa.NavbarInherit"
+       t-inherit="point_of_sale.Navbar"
+       t-inherit-mode="extension">
+
+        <!-- Inject store info setelah navbar-menu -->
+        <xpath expr="//div[hasclass('navbar-menu')]" position="after">
+            <div class="sentosa-store-info d-flex align-items-center gap-2 ms-2">
+                <span class="sentosa-store-name">
+                    🏪 Toko Utama Sentosa
+                </span>
+            </div>
+        </xpath>
+
+    </t>
+
+</templates>

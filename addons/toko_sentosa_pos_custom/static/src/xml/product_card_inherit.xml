@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- ─── Product Card: Badge Stok + Barcode + Scan Highlight ─── -->
+    <t t-name="toko_sentosa.ProductCardInherit"
+       t-inherit="point_of_sale.ProductCard"
+       t-inherit-mode="extension">
+
+        <!-- 2. Barcode text ditempatkan SETELAH div product-name -->
+        <xpath expr="//div[hasclass('product-name')]" position="after">
+            <div t-if="props.product.barcode"
+                 class="product-barcode-text text-truncate mt-1 text-muted"
+                 style="font-size: 0.7rem; font-family: monospace;">
+                🏷️ <t t-esc="props.product.barcode"/>
+            </div>
+        </xpath>
+
+    </t>
+
+</templates>

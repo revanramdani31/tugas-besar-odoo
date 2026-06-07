@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { Component } from "@odoo/owl";
+import { Component, useState } from "@odoo/owl";
 
 export class HazardousItemPopup extends Component {
     static template = "toko_sentosa_pos_custom.HazardousItemPopup";
@@ -25,6 +25,12 @@ export class HazardousItemPopup extends Component {
         other:     { icon: "fa-exclamation-triangle", color: "#f39c12", bg: "#fef9e7" },
     };
 
+    setup() {
+        this.state = useState({
+            confirmed: false,
+        });
+    }
+
     get hazardLabel() {
         return HazardousItemPopup.HAZARD_LABELS[this.props.product.x_hazard_type] || "Produk Berbahaya";
     }
@@ -38,7 +44,16 @@ export class HazardousItemPopup extends Component {
         return this.props.product.x_hazard_notes || null;
     }
 
+    get canProceed() {
+        return this.state.confirmed;
+    }
+
+    toggleConfirm() {
+        this.state.confirmed = !this.state.confirmed;
+    }
+
     confirm() {
+        if (!this.canProceed) return;
         this.props.close();
         this.props.onConfirm();
     }
