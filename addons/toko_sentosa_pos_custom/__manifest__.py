@@ -5,6 +5,7 @@
     'summary': 'Kustomisasi POS: UI transaksi, stok badge, member panel, quick cash, peringatan produk berbahaya, dashboard stok',
     'depends': ['point_of_sale', 'stock'],
     'data': [
+        'data/pos_category_data.xml',
         'views/pos_order_views.xml',
         'views/product_template_views.xml',
     ],
@@ -29,4 +30,5 @@
     'installable': True,
     'application': False,
     'license': 'LGPL-3',
+    'post_init_hook': 'post_init_hook',
 }

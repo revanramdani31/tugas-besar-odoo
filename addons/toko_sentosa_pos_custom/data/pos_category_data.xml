@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- 1. Buat Kategori POS -->
+        <record id="pos_categ_rumah_tangga" model="pos.category">
+            <field name="name">Rumah Tangga</field>
+        </record>
+
+        <record id="pos_categ_dekorasi" model="pos.category">
+            <field name="name">Dekorasi</field>
+        </record>
+
+        <!-- 2. Update konfigurasi POS utama agar memakai kategori ini -->
+        <record id="point_of_sale.pos_config_main" model="pos.config">
+            <field name="limit_categories">True</field>
+            <field name="iface_available_categ_ids" eval="[(6, 0, [ref('pos_categ_rumah_tangga'), ref('pos_categ_dekorasi')])]"/>
+        </record>
+    </data>
+</odoo>
