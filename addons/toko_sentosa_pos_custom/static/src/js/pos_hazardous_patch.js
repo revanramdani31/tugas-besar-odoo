@@ -3,12 +3,19 @@
 import { patch } from "@web/core/utils/patch";
 import { ProductScreen } from "@point_of_sale/app/screens/product_screen/product_screen";
 import { HazardousItemPopup } from "@toko_sentosa_pos_custom/js/hazardous_item_popup";
+import { useService } from "@web/core/utils/hooks";
 
 // ProductScreen.addProductToOrder() adalah method yang dipanggil
 // setiap kali produk diklik di layar POS (line 418 product_screen.js)
-// Barcode scan memanggil addLineToCurrentOrder langsung — kita patch itu juga
+// Barcode scan memanggil _barcodeProductAction — kita patch itu juga
 
 patch(ProductScreen.prototype, {
+
+    setup() {
+        super.setup(...arguments);
+        // Odoo 19: gunakan dialog service, bukan popup
+        this.hazardDialog = useService("dialog");
+    },
 
     async addProductToOrder(product) {
         const isHazardous = product?.x_is_hazardous
@@ -16,8 +23,13 @@ patch(ProductScreen.prototype, {
             ?? false;
 
         if (isHazardous) {
+            const dlg = this.hazardDialog || this.dialog;
+            if (!dlg) {
+                console.warn("[Hazardous] Dialog service not available, skipping popup.");
+                return super.addProductToOrder(product);
+            }
             const confirmed = await new Promise((resolve) => {
-                this.env.services.popup.add(HazardousItemPopup, {
+                dlg.add(HazardousItemPopup, {
                     product:   product,
                     onConfirm: () => resolve(true),
                     onCancel:  () => resolve(false),
@@ -42,17 +54,20 @@ patch(ProductScreen.prototype, {
         const product = lastLine?.product_id;
 
         if (product?.x_is_hazardous || product?.raw?.x_is_hazardous) {
-            // Tampilkan warning setelah produk masuk (informational saja untuk barcode)
-            this.env.services.popup.add(HazardousItemPopup, {
-                product:   product,
-                onConfirm: () => {},
-                onCancel:  () => {
-                    // Hapus orderline yang baru saja ditambahkan
-                    if (lastLine) {
-                        order.removeOrderline(lastLine);
-                    }
-                },
-            });
+            const dlg = this.hazardDialog || this.dialog;
+            if (dlg) {
+                // Tampilkan warning setelah produk masuk (informational saja untuk barcode)
+                dlg.add(HazardousItemPopup, {
+                    product:   product,
+                    onConfirm: () => {},
+                    onCancel:  () => {
+                        // Hapus orderline yang baru saja ditambahkan
+                        if (lastLine) {
+                            order.removeOrderline(lastLine);
+                        }
+                    },
+                });
+            }
         }
 
         return originalResult;

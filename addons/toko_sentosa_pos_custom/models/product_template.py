@@ -27,26 +27,17 @@ class ProductTemplate(models.Model):
         return pos_fields
 
     def _load_pos_data_read(self, records, config):
-        """Tambahkan qty_available dengan konteks gudang agar nilainya tidak 0 untuk POS yang memakai product.template."""
+        """Tambahkan qty_available dengan konteks gudang agar nilainya tidak 0 untuk POS."""
         res = super()._load_pos_data_read(records, config)
         for data, record in zip(res, records):
-            data['qty_available'] = record.with_context(warehouse_id=config.picking_type_id.warehouse_id.id).qty_available
+            data['qty_available'] = record.with_context(
+                warehouse_id=config.picking_type_id.warehouse_id.id
+            ).qty_available
         return res
+
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
-
-    def _load_pos_data_fields(self, config_id):
-        pos_fields = super()._load_pos_data_fields(config_id)
-        pos_fields += ['x_is_hazardous', 'x_hazard_type', 'x_hazard_notes', 'qty_available']
-        return pos_fields
-
-    def _load_pos_data_read(self, records, config):
-        """Tambahkan qty_available dengan konteks gudang agar nilainya tidak 0 untuk POS yang memakai product.product."""
-        res = super()._load_pos_data_read(records, config)
-        for data, record in zip(res, records):
-            data['qty_available'] = record.with_context(warehouse_id=config.picking_type_id.warehouse_id.id).qty_available
-        return res
 
     # Related fields agar nilai dari product.template
     # bisa diakses langsung dari product.product (yang dipakai POS)
@@ -76,5 +67,7 @@ class ProductProduct(models.Model):
         """Tambahkan qty_available dengan konteks gudang agar nilainya tidak 0."""
         res = super()._load_pos_data_read(records, config)
         for data, record in zip(res, records):
-            data['qty_available'] = record.with_context(warehouse_id=config.picking_type_id.warehouse_id.id).qty_available
+            data['qty_available'] = record.with_context(
+                warehouse_id=config.picking_type_id.warehouse_id.id
+            ).qty_available
         return res
