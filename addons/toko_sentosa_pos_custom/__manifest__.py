@@ -1,6 +1,6 @@
 {
     'name': 'Toko Sentosa POS Custom',
-    'version': '19.0.3.0.0',
+    'version': '19.0.3.0.1',
     'category': 'Sales/Point of Sale',
     'summary': 'Kustomisasi POS: UI transaksi, stok badge, member panel, quick cash, peringatan produk berbahaya, dashboard stok',
     'depends': ['point_of_sale', 'stock'],

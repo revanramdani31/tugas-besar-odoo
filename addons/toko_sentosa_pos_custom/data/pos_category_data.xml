@@ -10,10 +10,5 @@
             <field name="name">Dekorasi</field>
         </record>
 
-        <!-- 2. Update konfigurasi POS utama agar memakai kategori ini -->
-        <record id="point_of_sale.pos_config_main" model="pos.config">
-            <field name="limit_categories">True</field>
-            <field name="iface_available_categ_ids" eval="[(6, 0, [ref('pos_categ_rumah_tangga'), ref('pos_categ_dekorasi')])]"/>
-        </record>
     </data>
 </odoo>
